@@ -155,7 +155,7 @@
             </div>
         </div>
         
-        <div class="tabs flex bg-zinc-100/80 p-1.5 mx-5 mt-5 rounded-xl border border-zinc-200/50 mb-4 gap-1 flex-shrink-0">
+        <div class="tabs grid grid-cols-2 bg-zinc-100/80 p-1.5 mx-5 mt-5 rounded-xl border border-zinc-200/50 mb-4 gap-1 flex-shrink-0">
             <button class="tab-btn active" data-target="tab-file">
                 <span class="material-symbols-outlined text-[16px]">draft</span> File
             </button>
@@ -164,6 +164,9 @@
             </button>
             <button class="tab-btn" data-target="tab-mosh">
                 <span class="material-symbols-outlined text-[16px]">texture</span> Datamosh
+            </button>
+            <button class="tab-btn" data-target="tab-macro">
+                <span class="material-symbols-outlined text-[16px]">memory</span> Macros
             </button>
         </div>
 
@@ -176,6 +179,10 @@
                 <input type="file" id="upload" accept="image/*" class="hidden">
             </div>
             <p class="text-[11px] text-zinc-400 text-center font-medium mt-[-10px] mb-2">(or Ctrl+V to paste)</p>
+            
+            <button class="btn btn-secondary w-full text-xs shadow-sm hidden" id="btn-reapply-last">
+                <span class="material-symbols-outlined text-[16px]">history</span> Reapply Previous Actions
+            </button>
             
             <div class="h-px w-full bg-zinc-200/60 my-2 mt-auto"></div>
             
@@ -316,6 +323,10 @@
                 <span class="flex-1 font-medium text-[13px]">Transparent BG</span>
                 <input type="checkbox" id="transparent-bg" class="w-4 h-4 text-primary rounded border-zinc-300 focus:ring-primary">
             </label>
+            <div class="h-px w-full bg-zinc-200/60 my-2"></div>
+            <button id="btn-bake-pixelator" class="btn btn-primary w-full shadow-sm text-[13px] h-9">
+                <span class="material-symbols-outlined text-[18px]">layers</span> Bake Pixelator
+            </button>
         </div>
 
         <!-- DATAMOSH TAB -->
@@ -325,8 +336,20 @@
                 <span>Applying a moshing effect permanently bakes the current view to the history stack.</span>
             </div>
             
+            <!-- DEEPFRY (DODGE & BURN) -->
+            <div class="mosh-group border-rose-500/20 bg-rose-500/5 mt-1">
+                <label class="control-title text-rose-500">Deepfry (Dodge & Burn)</label>
+                <div class="flex items-center justify-between text-[10px] font-bold text-rose-500/70 uppercase tracking-tight mb-2 mt-1">
+                    <span>Intensity</span>
+                </div>
+                <input type="range" id="deepfry-intensity" min="1" max="100" value="50" class="w-full h-1 mb-4">
+                <button class="btn btn-primary bg-rose-600 hover:bg-rose-700 shadow-rose-600/20 text-white" id="btn-deepfry">
+                    <span class="material-symbols-outlined text-[18px]">local_fire_department</span> Deepfry
+                </button>
+            </div>
+
             <!-- GLITCH BLOCKS -->
-            <div class="mosh-group mt-1">
+            <div class="mosh-group">
                 <label class="control-title text-primary">Glitch Blocks</label>
                 <div class="w-full space-y-4 mb-2">
                     <div class="w-full">
@@ -368,7 +391,24 @@
                     <span class="material-symbols-outlined text-[18px]">blur_on</span> Random Crisp
                 </button>
             </div>
-            
+
+            <!-- GENERATION LOSS (JPEG DECAY) -->
+            <div class="mosh-group border-error/20 bg-error/5">
+                <label class="control-title text-error">Generation Loss (JPEG Decay)</label>
+                <div class="flex items-center justify-between text-[10px] font-bold text-error/70 uppercase tracking-tight mb-2 mt-1">
+                    <span>Loops</span>
+                    <span>Quality %</span>
+                </div>
+                <div class="flex gap-3 mb-4">
+                    <input type="range" id="genloss-iterations" min="1" max="150" value="30" class="flex-1 h-1">
+                    <input type="range" id="genloss-quality" min="0" max="30" value="2" class="flex-1 h-1">
+                </div>
+                <button class="btn btn-danger" id="btn-genloss">
+                    <span class="material-symbols-outlined text-[18px]">broken_image</span> Apply JPEG Decay
+                </button>
+            </div>
+
+            <!-- AUDIO FILTER SONIFICATION -->
             <div class="mosh-group">
                 <label class="control-title">Audio Filter Sonification</label>
                 <select id="sonify-preset" class="form-input mb-1">
@@ -386,6 +426,7 @@
                 </button>
             </div>
 
+            <!-- PIXEL SORT (GRAVITY DRIP) -->
             <div class="mosh-group">
                 <label class="control-title">Pixel Sort (Gravity Drip)</label>
                 <div class="flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-tight mb-1">
@@ -397,6 +438,7 @@
                 </button>
             </div>
 
+            <!-- CHANNEL INTERLEAVE (STUTTER) -->
             <div class="mosh-group">
                 <label class="control-title">Channel Interleave (Stutter)</label>
                 <select id="interleave-pattern" class="form-input mb-3">
@@ -409,22 +451,20 @@
                     <span class="material-symbols-outlined text-[18px]">reorder</span> Apply Stutter
                 </button>
             </div>
-
-            <div class="mosh-group border-error/20 bg-error/5">
-                <label class="control-title text-error">Generation Loss (JPEG Decay)</label>
-                <div class="flex items-center justify-between text-[10px] font-bold text-error/70 uppercase tracking-tight mb-2 mt-1">
-                    <span>Loops</span>
-                    <span>Quality %</span>
+            
+            <!-- NOISE (ARTIFACTS) -->
+            <div class="mosh-group border-amber-500/20 bg-amber-500/5">
+                <label class="control-title text-amber-500">Noise (Artifacts)</label>
+                <div class="flex items-center justify-between text-[10px] font-bold text-amber-500/70 uppercase tracking-tight mb-2 mt-1">
+                    <span>Intensity</span>
                 </div>
-                <div class="flex gap-3 mb-4">
-                    <input type="range" id="genloss-iterations" min="1" max="150" value="30" class="flex-1 h-1">
-                    <input type="range" id="genloss-quality" min="0" max="30" value="2" class="flex-1 h-1">
-                </div>
-                <button class="btn btn-danger" id="btn-genloss">
-                    <span class="material-symbols-outlined text-[18px]">broken_image</span> Deep Fry Image
+                <input type="range" id="noise-intensity" min="1" max="100" value="50" class="w-full h-1 mb-4">
+                <button class="btn btn-primary bg-amber-600 hover:bg-amber-700 shadow-amber-600/20 text-white" id="btn-noise">
+                    <span class="material-symbols-outlined text-[18px]">grain</span> Apply Noise
                 </button>
             </div>
 
+            <!-- HEADER SWAP (FRANKENSTEIN) -->
             <div class="mosh-group">
                 <label class="control-title">Header Swap (Frankenstein)</label>
                 <div class="flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-tight mb-2 mt-1">
@@ -440,6 +480,7 @@
                 </button>
             </div>
 
+            <!-- RGB CHANNEL SHIFT -->
             <div class="mosh-group">
                 <label class="control-title">RGB Channel Shift</label>
                 <input type="range" id="rgb-offset" min="1" max="50" value="15" class="w-full h-1 mt-2 mb-4">
@@ -448,6 +489,29 @@
                 </button>
             </div>
 
+        </div>
+
+        <!-- MACROS TAB -->
+        <div id="tab-macro" class="tab-content hide-scroll">
+            <div class="mosh-group">
+                <label class="control-title">Preset / Actions Sequence</label>
+                <div class="flex items-center justify-between text-xs text-zinc-500 mb-2 px-1">
+                    <span>Actions saved: <span id="macro-count" class="font-bold text-primary">0</span></span>
+                </div>
+                <textarea id="macro-text" class="w-full h-32 bg-zinc-900 text-zinc-300 text-xs font-mono p-2 rounded-lg border border-zinc-700/50 resize-none focus:outline-none focus:border-primary mb-2" placeholder="[ ... ]"></textarea>
+                <div class="flex gap-2">
+                    <button class="btn btn-secondary flex-1 shadow-sm text-xs" id="btn-copy-macro">
+                        <span class="material-symbols-outlined text-[16px]">content_copy</span> Copy Preset
+                    </button>
+                    <button class="btn btn-primary flex-1 shadow-sm text-xs" id="btn-play-macro">
+                        <span class="material-symbols-outlined text-[16px]">play_arrow</span> Run Preset
+                    </button>
+                </div>
+            </div>
+            <div class="bg-blue-50 text-blue-800 p-3 rounded-xl border border-blue-100 text-[11px] font-medium leading-relaxed mt-2 flex items-start gap-2">
+                <span class="material-symbols-outlined text-[16px] text-blue-500 mt-0.5">info</span>
+                <span>To create a preset, use the Pixelator and Datamosh tools normally. They are recorded automatically! Paste a preset code above and click Run to apply it to an image.</span>
+            </div>
         </div>
 
         <!-- GLOBAL ACTIONS (Persistent) -->
@@ -579,6 +643,7 @@
 
         // --- FIXED FILE HANDLING PIPELINE ---
         function handleImageFile(file) {
+            if (typeof resetMacroForNewImage === 'function') resetMacroForNewImage();
             if (!file) return;
             if (!file.type.startsWith('image/')) {
                 alert("Please select a valid image file.");
@@ -893,10 +958,16 @@
         }
 
         // --- DATAMOSH COMMIT PIPELINE ---
+        let resolveMacroStep = null;
         function commitDatamosh(newImgData) {
             pixelatorToggle.checked = false; // Turn off live pixelator to lock the baked state
             saveState(newImgData);
             updateCanvas();
+            
+            if (resolveMacroStep) {
+                resolveMacroStep();
+                resolveMacroStep = null;
+            }
         }
 
         // --- DATAMOSH EFFECTS ---
@@ -1172,6 +1243,106 @@
             commitDatamosh(newImgData);
         });
 
+        document.getElementById('btn-noise').addEventListener('click', () => {
+            if (history.length === 0) return;
+            const intensity = parseInt(document.getElementById('noise-intensity').value) / 10;
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imgData.data;
+            const newImgData = ctx.createImageData(canvas.width, canvas.height);
+            const newData = newImgData.data;
+            const bufferSize = data.length;
+            
+            for (let i = 0; i < bufferSize; i += 4) {
+                let r = data[i], g = data[i+1], b = data[i+2];
+                // Increase contrast
+                r = ((r / 255 - 0.5) * (1 + intensity * 0.2) + 0.5) * 255;
+                g = ((g / 255 - 0.5) * (1 + intensity * 0.2) + 0.5) * 255;
+                b = ((b / 255 - 0.5) * (1 + intensity * 0.2) + 0.5) * 255;
+                
+                // Increase saturation
+                let lum = 0.299 * r + 0.587 * g + 0.114 * b;
+                r = lum + (r - lum) * (1 + intensity);
+                g = lum + (g - lum) * (1 + intensity);
+                b = lum + (b - lum) * (1 + intensity);
+                
+                // Add some artificial noise/artifacts based on intensity
+                if (Math.random() < (intensity * 0.05)) {
+                    r += (Math.random() - 0.5) * 100 * intensity;
+                    g += (Math.random() - 0.5) * 100 * intensity;
+                    b += (Math.random() - 0.5) * 100 * intensity;
+                }
+                
+                newData[i] = Math.max(0, Math.min(255, r));
+                newData[i+1] = Math.max(0, Math.min(255, g));
+                newData[i+2] = Math.max(0, Math.min(255, b));
+                newData[i+3] = data[i+3];
+            }
+            commitDatamosh(newImgData);
+        });
+
+        document.getElementById('btn-deepfry').addEventListener('click', () => {
+            if (history.length === 0) return;
+            const intensity = parseInt(document.getElementById('deepfry-intensity').value);
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imgData.data;
+            const newImgData = ctx.createImageData(canvas.width, canvas.height);
+            const newData = newImgData.data;
+            const bufferSize = data.length;
+            
+            for (let i = 0; i < bufferSize; i += 4) {
+                let r = data[i], g = data[i+1], b = data[i+2];
+                
+                // Step 1: Contrast stretch to push apart colors
+                let factor = 1 + (intensity / 10);
+                r = (r - 128) * factor + 128;
+                g = (g - 128) * factor + 128;
+                b = (b - 128) * factor + 128;
+                
+                r = Math.max(0, Math.min(255, r));
+                g = Math.max(0, Math.min(255, g));
+                b = Math.max(0, Math.min(255, b));
+
+                // Step 2: Color Dodge pass (self-blend) to blow out highlights
+                if (intensity > 10) {
+                    let dodgeFactor = Math.min(1, (intensity - 10) / 40);
+                    let blendR = r * dodgeFactor;
+                    let blendG = g * dodgeFactor;
+                    let blendB = b * dodgeFactor;
+                    
+                    r = blendR >= 255 ? 255 : Math.min(255, (r * 255) / (255 - blendR));
+                    g = blendG >= 255 ? 255 : Math.min(255, (g * 255) / (255 - blendG));
+                    b = blendB >= 255 ? 255 : Math.min(255, (b * 255) / (255 - blendB));
+                }
+
+                // Step 3: Color Burn pass (self-blend) to crush shadows
+                if (intensity > 50) {
+                    let burnFactor = Math.min(1, (intensity - 50) / 50);
+                    let blendR = Math.max(0, 255 - (255 - r) * burnFactor);
+                    let blendG = Math.max(0, 255 - (255 - g) * burnFactor);
+                    let blendB = Math.max(0, 255 - (255 - b) * burnFactor);
+                    
+                    r = blendR <= 0 ? 0 : Math.max(0, 255 - ( (255 - r) * 255 ) / blendR);
+                    g = blendG <= 0 ? 0 : Math.max(0, 255 - ( (255 - g) * 255 ) / blendG);
+                    b = blendB <= 0 ? 0 : Math.max(0, 255 - ( (255 - b) * 255 ) / blendB);
+                }
+
+                // Step 4: Extreme Saturation bump for the deepfried look
+                if (intensity > 25) {
+                    let lum = 0.299 * r + 0.587 * g + 0.114 * b;
+                    let satFactor = 1 + (intensity / 20);
+                    r = lum + (r - lum) * satFactor;
+                    g = lum + (g - lum) * satFactor;
+                    b = lum + (b - lum) * satFactor;
+                }
+
+                newData[i] = Math.max(0, Math.min(255, r));
+                newData[i+1] = Math.max(0, Math.min(255, g));
+                newData[i+2] = Math.max(0, Math.min(255, b));
+                newData[i+3] = data[i+3];
+            }
+            commitDatamosh(newImgData);
+        });
+
         // --- DOWNLOAD & SVG LOGIC ---
         function generateSVG() {
             if (history.length === 0) return "";
@@ -1300,6 +1471,132 @@
                 link.click(); 
                 document.body.removeChild(link);
                 setTimeout(() => URL.revokeObjectURL(url), 100);
+            }
+        });
+
+        // --- MACRO / PRESET SYSTEM ---
+        let currentMacro = [];
+        const macroCountEl = document.getElementById('macro-count');
+        const macroTextEl = document.getElementById('macro-text');
+
+        function getGlobalState() {
+            let state = {};
+            document.querySelectorAll('input[id], select[id]').forEach(el => {
+                if (el.type === 'file' || el.id.startsWith('macro-')) return;
+                state[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+            });
+            return state;
+        }
+
+        function applyGlobalState(state) {
+            for (let id in state) {
+                let el = document.getElementById(id);
+                if (el) {
+                    if (el.type === 'checkbox') el.checked = state[id];
+                    else el.value = state[id];
+                    el.dispatchEvent(new Event('input')); // visually update
+                    if (el.type === 'range' && el.nextElementSibling && el.nextElementSibling.classList.contains('text-zinc-500')) {
+                        el.nextElementSibling.textContent = state[id];
+                    }
+                }
+            }
+            
+            // Fix: Restore the pixelator toggle explicitly, because dispatching 'input' 
+            // on pixelator sliders forces it to true automatically due to its listeners.
+            const pToggle = document.getElementById('enable-pixelator');
+            if (pToggle && state['enable-pixelator'] !== undefined) {
+                pToggle.checked = state['enable-pixelator'];
+            }
+            
+            updateCanvas(); // Reflect Pixelator changes instantly
+        }
+
+        function recordAction(targetId) {
+            currentMacro.push({ target: targetId, state: getGlobalState() });
+            macroCountEl.textContent = currentMacro.length;
+            macroTextEl.value = JSON.stringify(currentMacro);
+        }
+
+        // Add listeners to record actions
+        const effectButtons = ['btn-sonify', 'btn-sort', 'btn-rgb', 'btn-genloss', 'btn-frankenstein', 'btn-pixelate', 'btn-sharpen', 'btn-interleave', 'btn-noise', 'btn-deepfry'];
+        effectButtons.forEach(id => {
+            let btn = document.getElementById(id);
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    if (history.length > 0) recordAction(id);
+                }, true); // Use capture phase so it records BEFORE the effect runs
+            }
+        });
+
+        // Bake Pixelator Logic
+        document.getElementById('btn-bake-pixelator').addEventListener('click', () => {
+            if (history.length === 0) return;
+            recordAction('btn-bake-pixelator');
+            commitDatamosh(ctx.getImageData(0, 0, canvas.width, canvas.height));
+        });
+
+        document.getElementById('btn-copy-macro').addEventListener('click', async () => {
+            await navigator.clipboard.writeText(macroTextEl.value);
+            const btn = document.getElementById('btn-copy-macro');
+            btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">check</span> Copied!`;
+            setTimeout(() => {
+                btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">content_copy</span> Copy Preset`;
+            }, 2000);
+        });
+
+        document.getElementById('btn-play-macro').addEventListener('click', async () => {
+            if (history.length === 0) {
+                alert("Please load an image first.");
+                return;
+            }
+            try {
+                let macro = JSON.parse(macroTextEl.value);
+                if(!Array.isArray(macro)) return;
+                
+                const btn = document.getElementById('btn-play-macro');
+                btn.disabled = true;
+                btn.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">sync</span> Playing...`;
+                
+                for (let step of macro) {
+                    applyGlobalState(step.state);
+                    await new Promise(resolve => {
+                        resolveMacroStep = resolve;
+                        document.getElementById(step.target).click();
+                        
+                        // Fallback resolve to prevent infinite hangs if an effect errors out
+                        setTimeout(() => { if(resolveMacroStep === resolve) resolve(); }, 3000); 
+                    });
+                    // Tiny delay to let DOM and Canvas settle
+                    await new Promise(r => setTimeout(r, 50)); 
+                }
+                btn.disabled = false;
+                btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">play_arrow</span> Run Preset`;
+            } catch(e) {
+                alert("Invalid Preset JSON");
+            }
+        });
+
+        // Reapply Previous Logic
+        let lastImageMacro = [];
+        window.resetMacroForNewImage = function() {
+            if (currentMacro && currentMacro.length > 0) {
+                lastImageMacro = [...currentMacro];
+            }
+            currentMacro = [];
+            if(macroCountEl) macroCountEl.textContent = '0';
+            if(macroTextEl) macroTextEl.value = '';
+            
+            const reapplyBtn = document.getElementById('btn-reapply-last');
+            if (reapplyBtn) {
+                if (lastImageMacro.length > 0) reapplyBtn.classList.remove('hidden');
+                else reapplyBtn.classList.add('hidden');
+            }
+        };
+
+        document.getElementById('btn-reapply-last').addEventListener('click', () => {
+            if (lastImageMacro.length > 0) {
+                macroTextEl.value = JSON.stringify(lastImageMacro);
+                document.getElementById('btn-play-macro').click();
             }
         });
     </script>
