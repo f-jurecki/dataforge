@@ -550,9 +550,6 @@
                 <button class="btn btn-success" id="btn-download">
                     <span class="material-symbols-outlined">download</span> Download Snapshot
                 </button>
-                <button class="btn btn-secondary hidden mt-2" id="btn-ios-save">
-                    <span class="material-symbols-outlined">ios_share</span> Save on iPhone
-                </button>
             </div>
         </div>
 
@@ -1817,10 +1814,6 @@
         });
 
         // --- DOWNLOAD & SVG LOGIC ---
-        function isIOSDevice() {
-            return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        }
-
         function dataUrlToBlob(dataUrl) {
             const [header, encoded] = dataUrl.split(',');
             const mimeMatch = header.match(/^data:([^;]+)/);
@@ -1830,14 +1823,14 @@
             return new Blob([bytes], { type: mimeMatch ? mimeMatch[1] : 'application/octet-stream' });
         }
 
-        function createIOSExportFile(format) {
+        function createMobileExportFile(format) {
             if (format === 'svg') {
                 return new File([generateSVG()], 'dataforge-vector.svg', { type: 'image/svg+xml' });
             }
             return new File([dataUrlToBlob(canvas.toDataURL('image/png'))], 'dataforge-snapshot.png', { type: 'image/png' });
         }
 
-        function openIOSFilePreview(file) {
+        function openMobileFilePreview(file) {
             const url = URL.createObjectURL(file);
             const preview = window.open(url, '_blank');
             if (!preview) window.location.assign(url);
@@ -1972,12 +1965,35 @@
             return svg;
         }
 
-        document.getElementById('btn-download').addEventListener('click', () => {
+        async function saveMobileExport(format) {
+            let file = null;
+            try {
+                file = createMobileExportFile(format);
+                if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+                    await navigator.share({ files: [file], title: 'DataForge export' });
+                } else {
+                    openMobileFilePreview(file);
+                }
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    console.error('Mobile export failed:', error);
+                    if (file) openMobileFilePreview(file);
+                    else alert('Could not prepare the image for saving.');
+                }
+            }
+        }
+
+        document.getElementById('btn-download').addEventListener('click', async () => {
             if (history.length === 0) { 
                 alert("Please load an image first."); 
                 return; 
             }
             const format = document.getElementById('export-format').value;
+            if (window.matchMedia('(max-width: 767px)').matches) {
+                await saveMobileExport(format);
+                return;
+            }
+
             const link = document.createElement('a');
 
             if (format === 'png') {
@@ -1995,33 +2011,6 @@
                 link.click(); 
                 document.body.removeChild(link);
                 setTimeout(() => URL.revokeObjectURL(url), 100);
-            }
-        });
-
-        const iosSaveButton = document.getElementById('btn-ios-save');
-        if (isIOSDevice()) iosSaveButton.classList.remove('hidden');
-
-        iosSaveButton.addEventListener('click', async () => {
-            if (history.length === 0) {
-                alert('Please load an image first.');
-                return;
-            }
-
-            const format = document.getElementById('export-format').value;
-            let file = null;
-            try {
-                file = createIOSExportFile(format);
-                if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
-                    await navigator.share({ files: [file], title: 'DataForge export' });
-                } else {
-                    openIOSFilePreview(file);
-                }
-            } catch (error) {
-                if (error.name !== 'AbortError') {
-                    console.error('iOS export failed:', error);
-                    if (file) openIOSFilePreview(file);
-                    else alert('Could not prepare the image for saving. Try opening this page directly in Safari.');
-                }
             }
         });
 
