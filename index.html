@@ -315,7 +315,7 @@
             border-radius: 2px !important;
         }
         #creator-credit {
-            position: absolute;
+            position: fixed;
             right: 24px;
             bottom: 14px;
             z-index: 30;
@@ -419,11 +419,19 @@
                 max-height: 100% !important;
             }
             #creator-credit {
-                right: 12px;
-                bottom: 5px;
-                font-size: 8px;
-                letter-spacing: 0.08em;
+                position: static;
+                order: 2;
+                display: block;
+                width: 100%;
+                padding: 22px 16px calc(22px + env(safe-area-inset-bottom));
+                border-top: 1px solid #202020;
+                background: #050505;
+                color: #666666;
+                font-size: 10px;
+                letter-spacing: 0.1em;
+                text-align: center;
             }
+            #creator-credit .credit-arrow { display: none; }
 
             .sidebar {
                 order: 1;
@@ -566,6 +574,14 @@
             </div>
 
             <div class="control-group">
+                <div class="control-title">
+                    <label>Grid Rotation</label>
+                    <span id="grid-rotation-val"></span>
+                </div>
+                <input type="range" id="grid-rotation" min="-45" max="45" value="0" class="w-full h-1 mt-1 mb-2">
+            </div>
+
+            <div class="control-group">
                 <label class="control-title">Pixel Shape</label>
                 <select id="type" class="form-input">
                     <option value="square">Classic Square</option>
@@ -652,6 +668,23 @@
                     <span id="brightness-val"></span>
                 </div>
                 <input type="range" id="brightness" min="-128" max="128" value="0" class="w-full h-1 mt-1 mb-2">
+            </div>
+
+            <div class="control-group">
+                <label class="control-title">Color Threshold</label>
+                <select id="color-threshold-mode" class="form-input">
+                    <option value="none">Off — Entire Image</option>
+                    <option value="shadows">Shadows Only</option>
+                    <option value="highlights">Highlights Only</option>
+                </select>
+                <div id="color-threshold-controls" class="panel-box" style="display: none;">
+                    <div class="control-title">
+                        <label>Luminance Threshold</label>
+                        <span id="color-threshold-val"></span>
+                    </div>
+                    <input type="range" id="color-threshold" min="0" max="255" value="128" class="w-full h-1 mt-1">
+                    <p class="text-[10px] text-zinc-400 leading-relaxed">Pixels outside the selected range remain unchanged.</p>
+                </div>
             </div>
 
             <div class="control-group">
@@ -897,8 +930,8 @@
             </div>
 
         </div>
-        <a id="creator-credit" href="https://www.instagram.com/jurecki.things" target="_blank" rel="noopener noreferrer" aria-label="Fedor Jurecki on Instagram">Fedor Jurecki ↗</a>
     </main>
+    <a id="creator-credit" href="https://www.instagram.com/jurecki.things" target="_blank" rel="noopener noreferrer" aria-label="Fedor Jurecki on Instagram">Fedor Jurecki <span class="credit-arrow" aria-hidden="true">↗</span></a>
 
     <script>
         // --- CORE VARIABLES ---
@@ -957,6 +990,14 @@
             return bestColor;
         }
 
+        function rotatePoint(x, y, centerX, centerY, cosAngle, sinAngle) {
+            const dx = x - centerX, dy = y - centerY;
+            return {
+                x: centerX + dx * cosAngle - dy * sinAngle,
+                y: centerY + dx * sinAngle + dy * cosAngle
+            };
+        }
+
         function escapeXml(unsafe) {
             return unsafe.replace(/[<>&'"]/g, c => {
                 switch(c) { case '<': return '&lt;'; case '>': return '&gt;'; case '&': return '&amp;'; case '\'': return '&apos;'; case '"': return '&quot;'; }
@@ -977,6 +1018,8 @@
         initLabel('dither-spread', ''); 
         initLabel('brightness', ''); 
         initLabel('glitch', 'px');
+        initLabel('grid-rotation', '°');
+        initLabel('color-threshold', '');
 
         document.getElementById('type').addEventListener('change', e => { 
             document.getElementById('ascii-controls').style.display = (e.target.value === 'ascii') ? 'flex' : 'none'; 
@@ -988,6 +1031,10 @@
         
         document.getElementById('dither-matrix').addEventListener('change', e => { 
             document.getElementById('dither-controls').style.display = (e.target.value === 'none') ? 'none' : 'flex'; 
+        });
+
+        document.getElementById('color-threshold-mode').addEventListener('change', e => {
+            document.getElementById('color-threshold-controls').style.display = (e.target.value === 'none') ? 'none' : 'flex';
         });
 
         // --- STATE & HISTORY MANAGEMENT ---
@@ -1154,7 +1201,8 @@
         // --- RENDERING PIPELINE ---
         const pixelControls =[
             'enable-pixelator', 'size', 'scale', 'type', 'transparent-bg', 'brightness', 'color-dark', 'color-light', 
-            'color-palette', 'grid-layout', 'size-mode', 'dither-matrix', 'dither-spread', 'ascii-chars', 'crt-scanlines', 'glitch'
+            'color-palette', 'grid-layout', 'grid-rotation', 'size-mode', 'dither-matrix', 'dither-spread', 'ascii-chars',
+            'crt-scanlines', 'glitch', 'color-threshold-mode', 'color-threshold'
         ];
         
         pixelControls.forEach(id => {
@@ -1184,14 +1232,17 @@
             document.getElementById('dither-spread').value = rInt(20, 100);
             document.getElementById('brightness').value = rInt(-30, 30);
             document.getElementById('glitch').value = rChoice([0, 0, 0, rInt(5, 20)]);
+            document.getElementById('grid-rotation').value = rChoice([0, 0, 0, -30, -15, 15, 30, 45]);
+            document.getElementById('color-threshold-mode').value = rChoice(['none', 'none', 'none', 'shadows', 'highlights']);
+            document.getElementById('color-threshold').value = rInt(64, 192);
             document.getElementById('crt-scanlines').checked = Math.random() > 0.7;
             
             const hexArr =['#1a1a24','#ff9a44','#051c09','#3bff82','#2a0845','#6441A5','#000000','#ffffff','#ff0044','#00f2fe'];
             document.getElementById('color-dark').value = rChoice(hexArr);
-            document.getElementById('color-light').value = rChoice(hexArr);['type', 'color-palette', 'dither-matrix'].forEach(id => {
+            document.getElementById('color-light').value = rChoice(hexArr);['type', 'color-palette', 'dither-matrix', 'color-threshold-mode'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.dispatchEvent(new Event('change'));
-            });['size', 'scale', 'dither-spread', 'brightness', 'glitch'].forEach(id => {
+            });['size', 'scale', 'dither-spread', 'brightness', 'glitch', 'grid-rotation', 'color-threshold'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.dispatchEvent(new Event('input'));
             });
@@ -1227,6 +1278,9 @@
             const ditherMode = document.getElementById('dither-matrix').value;
             const ditherSpread = parseInt(document.getElementById('dither-spread').value);
             const brightnessOffset = parseInt(document.getElementById('brightness').value);
+            const rotationDegrees = parseInt(document.getElementById('grid-rotation').value);
+            const thresholdMode = document.getElementById('color-threshold-mode').value;
+            const thresholdValue = parseInt(document.getElementById('color-threshold').value);
 
             let activePalette = null;
             if (paletteChoice === 'custom') {
@@ -1238,24 +1292,42 @@
             const matrixSize = ditherMode !== 'none' ? parseInt(ditherMode) : 1;
             const selectedMatrix = ditherMode !== 'none' ? bayerMatrices[matrixSize] : null;
             const data = baseImgData.data;
+            const rotationRadians = rotationDegrees * Math.PI / 180;
+            const cosRotation = Math.cos(rotationRadians), sinRotation = Math.sin(rotationRadians);
+            const imageCenterX = width / 2, imageCenterY = height / 2;
+            const diagonal = Math.hypot(width, height);
+            const gridStartX = rotationDegrees === 0 ? -size : imageCenterX - diagonal / 2 - size * 2;
+            const gridEndX = rotationDegrees === 0 ? width + size : imageCenterX + diagonal / 2 + size * 2;
+            const gridStartY = rotationDegrees === 0 ? 0 : imageCenterY - diagonal / 2 - size * 2;
+            const gridEndY = rotationDegrees === 0 ? height : imageCenterY + diagonal / 2 + size * 2;
 
             ctx.clearRect(0, 0, width, height);
-            
-            if (!isTransparent) {
+
+            if (thresholdMode !== 'none') {
+                ctx.putImageData(baseImgData, 0, 0);
+            } else if (!isTransparent) {
                 ctx.fillStyle = activePalette ? `rgb(${activePalette[0].r}, ${activePalette[0].g}, ${activePalette[0].b})` : '#000000';
                 ctx.fillRect(0, 0, width, height);
             }
 
-            for (let y = 0; y < height; y += size) {
+            ctx.save();
+            ctx.translate(imageCenterX, imageCenterY);
+            ctx.rotate(rotationRadians);
+            ctx.translate(-imageCenterX, -imageCenterY);
+
+            for (let y = gridStartY; y < gridEndY; y += size) {
                 let rowIdx = Math.floor(y / size);
                 let xOffset = ((gridLayout === 'staggered') && (rowIdx % 2 !== 0)) ? size / 2 : 0;
 
-                for (let x = -size; x < width + size; x += size) {
+                for (let x = gridStartX; x < gridEndX; x += size) {
                     let drawX = x + xOffset;
-                    if (drawX < -size || drawX > width) continue;
+                    let centerX = drawX + size / 2;
+                    let centerY = y + size / 2;
+                    const samplePoint = rotatePoint(centerX, centerY, imageCenterX, imageCenterY, cosRotation, sinRotation);
+                    if (samplePoint.x < 0 || samplePoint.x >= width || samplePoint.y < 0 || samplePoint.y >= height) continue;
 
-                    let cX = Math.min(Math.max(drawX + Math.floor(size / 2), 0), width - 1);
-                    let cY = Math.min(Math.max(y + Math.floor(size / 2), 0), height - 1);
+                    let cX = Math.min(Math.max(Math.floor(samplePoint.x), 0), width - 1);
+                    let cY = Math.min(Math.max(Math.floor(samplePoint.y), 0), height - 1);
                     let cXR = Math.max(0, cX - glitchAmount);
                     let cXB = Math.min(width - 1, cX + glitchAmount);
 
@@ -1265,6 +1337,10 @@
 
                     let r = data[iR], g = data[iG+1], b = data[iB+2], a = data[iG+3] / 255;
                     if (a === 0) continue;
+
+                    const sourceLuminance = 0.299 * data[iG] + 0.587 * data[iG + 1] + 0.114 * data[iG + 2];
+                    if (thresholdMode === 'shadows' && sourceLuminance > thresholdValue) continue;
+                    if (thresholdMode === 'highlights' && sourceLuminance < thresholdValue) continue;
 
                     r = Math.max(0, Math.min(255, r + brightnessOffset));
                     g = Math.max(0, Math.min(255, g + brightnessOffset));
@@ -1298,8 +1374,6 @@
                     if (currentScale <= 0.05) continue;
 
                     let drawSize = size * currentScale;
-                    let centerX = drawX + size / 2;
-                    let centerY = y + size / 2;
 
                     if (type === 'isometric') {
                         let s = drawSize; let z = s * 0.6; let x0 = centerX - s/2; let y0 = centerY - s/2;
@@ -1348,8 +1422,9 @@
             }
             if (showScanlines) {
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-                for (let y = 0; y < height; y += size) ctx.fillRect(0, y + size * 0.75, width, size * 0.25);
+                for (let y = gridStartY; y < gridEndY; y += size) ctx.fillRect(gridStartX, y + size * 0.75, gridEndX - gridStartX, size * 0.25);
             }
+            ctx.restore();
         }
 
         // --- DATAMOSH COMMIT PIPELINE ---
@@ -1755,6 +1830,9 @@
             const ditherMode = document.getElementById('dither-matrix').value;
             const ditherSpread = parseInt(document.getElementById('dither-spread').value);
             const brightnessOffset = parseInt(document.getElementById('brightness').value);
+            const rotationDegrees = parseInt(document.getElementById('grid-rotation').value);
+            const thresholdMode = document.getElementById('color-threshold-mode').value;
+            const thresholdValue = parseInt(document.getElementById('color-threshold').value);
 
             let activePalette = null;
             if (paletteChoice === 'custom') activePalette =[hexToRgb(document.getElementById('color-dark').value), hexToRgb(document.getElementById('color-light').value)];
@@ -1764,25 +1842,46 @@
             const selectedMatrix = ditherMode !== 'none' ? bayerMatrices[matrixSize] : null;
 
             const width = baseImgData.width, height = baseImgData.height, data = baseImgData.data;
+            const rotationRadians = rotationDegrees * Math.PI / 180;
+            const cosRotation = Math.cos(rotationRadians), sinRotation = Math.sin(rotationRadians);
+            const imageCenterX = width / 2, imageCenterY = height / 2;
+            const diagonal = Math.hypot(width, height);
+            const gridStartX = rotationDegrees === 0 ? -size : imageCenterX - diagonal / 2 - size * 2;
+            const gridEndX = rotationDegrees === 0 ? width + size : imageCenterX + diagonal / 2 + size * 2;
+            const gridStartY = rotationDegrees === 0 ? 0 : imageCenterY - diagonal / 2 - size * 2;
+            const gridEndY = rotationDegrees === 0 ? height : imageCenterY + diagonal / 2 + size * 2;
             let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`;
-            
-            if (!isTransparent) {
+
+            if (thresholdMode !== 'none') {
+                const sourceCanvas = document.createElement('canvas');
+                sourceCanvas.width = width; sourceCanvas.height = height;
+                sourceCanvas.getContext('2d').putImageData(baseImgData, 0, 0);
+                svg += `<image href="${sourceCanvas.toDataURL('image/png')}" width="${width}" height="${height}" />`;
+            } else if (!isTransparent) {
                 let bgRgb = activePalette ? `rgb(${activePalette[0].r}, ${activePalette[0].g}, ${activePalette[0].b})` : '#000000';
                 svg += `<rect width="${width}" height="${height}" fill="${bgRgb}" />`; 
             }
 
-            for (let y = 0; y < height; y += size) {
+            svg += `<g transform="rotate(${rotationDegrees} ${imageCenterX} ${imageCenterY})">`;
+
+            for (let y = gridStartY; y < gridEndY; y += size) {
                 let rowIdx = Math.floor(y / size);
                 let xOffset = ((gridLayout === 'staggered') && (rowIdx % 2 !== 0)) ? size / 2 : 0;
-                for (let x = -size; x < width + size; x += size) {
+                for (let x = gridStartX; x < gridEndX; x += size) {
                     let drawX = x + xOffset;
-                    if (drawX < -size || drawX > width) continue;
-                    let cX = Math.min(Math.max(drawX + Math.floor(size / 2), 0), width - 1);
-                    let cY = Math.min(Math.max(y + Math.floor(size / 2), 0), height - 1);
+                    let centerX = drawX + size / 2, centerY = y + size / 2;
+                    const samplePoint = rotatePoint(centerX, centerY, imageCenterX, imageCenterY, cosRotation, sinRotation);
+                    if (samplePoint.x < 0 || samplePoint.x >= width || samplePoint.y < 0 || samplePoint.y >= height) continue;
+                    let cX = Math.min(Math.max(Math.floor(samplePoint.x), 0), width - 1);
+                    let cY = Math.min(Math.max(Math.floor(samplePoint.y), 0), height - 1);
                     let cXR = Math.max(0, cX - glitchAmount), cXB = Math.min(width - 1, cX + glitchAmount);
                     let iR = (cY * width + cXR) * 4, iG = (cY * width + cX) * 4, iB = (cY * width + cXB) * 4;
                     let r = data[iR], g = data[iG+1], b = data[iB+2], rawA = data[iG+3] / 255;
                     if (rawA === 0) continue;
+
+                    const sourceLuminance = 0.299 * data[iG] + 0.587 * data[iG + 1] + 0.114 * data[iG + 2];
+                    if (thresholdMode === 'shadows' && sourceLuminance > thresholdValue) continue;
+                    if (thresholdMode === 'highlights' && sourceLuminance < thresholdValue) continue;
 
                     r = Math.max(0, Math.min(255, r + brightnessOffset)); g = Math.max(0, Math.min(255, g + brightnessOffset)); b = Math.max(0, Math.min(255, b + brightnessOffset));
                     let baseLuminance = 0.299 * r + 0.587 * g + 0.114 * b;
@@ -1803,7 +1902,6 @@
                     if (currentScale <= 0.05) continue;
 
                     let a = rawA.toFixed(3), color = `rgb(${r},${g},${b})`, drawSize = size * currentScale;
-                    let centerX = drawX + size / 2, centerY = y + size / 2;
 
                     if (type === 'isometric') {
                         let s = drawSize; let z = s * 0.6; let x0 = centerX - s/2; let y0 = centerY - s/2;
@@ -1838,7 +1936,8 @@
                     }
                 }
             }
-            if (showScanlines) for (let y = 0; y < height; y += size) svg += `<rect x="0" y="${(y + size * 0.75).toFixed(2)}" width="${width}" height="${(size * 0.25).toFixed(2)}" fill="black" fill-opacity="0.4" />`;
+            if (showScanlines) for (let y = gridStartY; y < gridEndY; y += size) svg += `<rect x="${gridStartX.toFixed(2)}" y="${(y + size * 0.75).toFixed(2)}" width="${(gridEndX - gridStartX).toFixed(2)}" height="${(size * 0.25).toFixed(2)}" fill="black" fill-opacity="0.4" />`;
+            svg += `</g>`;
             svg += `</svg>`; 
             return svg;
         }
@@ -1901,6 +2000,10 @@
                 for (const [id, value] of Object.entries(step.state)) {
                     if (macroControlsById.has(id) && ['string', 'number', 'boolean'].includes(typeof value)) state[id] = value;
                 }
+                // : Presets created before these controls existed keep their original visual output.
+                if (!('grid-rotation' in state)) state['grid-rotation'] = '0';
+                if (!('color-threshold-mode' in state)) state['color-threshold-mode'] = 'none';
+                if (!('color-threshold' in state)) state['color-threshold'] = '128';
                 return { ...(step.target ? { target: step.target } : {}), state };
             });
         }
@@ -1921,6 +2024,8 @@
             console.assert(sample[0].state['rgb-offset'] === '7', 'Macro cloning failed');
             const usedNames = new Set();
             console.assert(makeOutputName({ name: 'photo.jpg' }, 'svg', usedNames) === 'photo-dataforge.svg' && makeOutputName({ name: 'photo.png' }, 'svg', usedNames) === 'photo-dataforge-2.svg', 'Batch naming failed');
+            const rotated = rotatePoint(1, 0, 0, 0, 0, 1);
+            console.assert(Math.abs(rotated.x) < 0.000001 && Math.abs(rotated.y - 1) < 0.000001, 'Grid rotation failed');
         }
         runMacroSelfCheck();
 
