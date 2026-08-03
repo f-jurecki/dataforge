@@ -550,6 +550,9 @@
                 <button class="btn btn-success" id="btn-download">
                     <span class="material-symbols-outlined">download</span> Download Snapshot
                 </button>
+                <button class="btn btn-secondary hidden mt-2" id="btn-ios-save">
+                    <span class="material-symbols-outlined">ios_share</span> Save on iPhone
+                </button>
             </div>
         </div>
 
@@ -1814,6 +1817,33 @@
         });
 
         // --- DOWNLOAD & SVG LOGIC ---
+        function isIOSDevice() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
+
+        function dataUrlToBlob(dataUrl) {
+            const [header, encoded] = dataUrl.split(',');
+            const mimeMatch = header.match(/^data:([^;]+)/);
+            const binary = atob(encoded);
+            const bytes = new Uint8Array(binary.length);
+            for (let index = 0; index < binary.length; index++) bytes[index] = binary.charCodeAt(index);
+            return new Blob([bytes], { type: mimeMatch ? mimeMatch[1] : 'application/octet-stream' });
+        }
+
+        function createIOSExportFile(format) {
+            if (format === 'svg') {
+                return new File([generateSVG()], 'dataforge-vector.svg', { type: 'image/svg+xml' });
+            }
+            return new File([dataUrlToBlob(canvas.toDataURL('image/png'))], 'dataforge-snapshot.png', { type: 'image/png' });
+        }
+
+        function openIOSFilePreview(file) {
+            const url = URL.createObjectURL(file);
+            const preview = window.open(url, '_blank');
+            if (!preview) window.location.assign(url);
+            setTimeout(() => URL.revokeObjectURL(url), 60000);
+        }
+
         function generateSVG() {
             if (history.length === 0) return "";
             const baseImgData = history[history.length - 1];
@@ -1968,6 +1998,33 @@
             }
         });
 
+        const iosSaveButton = document.getElementById('btn-ios-save');
+        if (isIOSDevice()) iosSaveButton.classList.remove('hidden');
+
+        iosSaveButton.addEventListener('click', async () => {
+            if (history.length === 0) {
+                alert('Please load an image first.');
+                return;
+            }
+
+            const format = document.getElementById('export-format').value;
+            let file = null;
+            try {
+                file = createIOSExportFile(format);
+                if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+                    await navigator.share({ files: [file], title: 'DataForge export' });
+                } else {
+                    openIOSFilePreview(file);
+                }
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    console.error('iOS export failed:', error);
+                    if (file) openIOSFilePreview(file);
+                    else alert('Could not prepare the image for saving. Try opening this page directly in Safari.');
+                }
+            }
+        });
+
         // --- MACRO / PRESET SYSTEM ---
         let currentMacro = [];
         let isReplayingMacro = false;
@@ -2046,6 +2103,7 @@
             console.assert(Math.abs(rotated.x) < 0.000001 && Math.abs(rotated.y - 1) < 0.000001, 'Grid rotation failed');
             const compacted = compactMacro([{ state: { size: '10' } }, { state: { size: '20' } }, { target: 'btn-rgb', state: { size: '20' } }]);
             console.assert(compacted.length === 1 && compacted[0].target === 'btn-rgb', 'Macro compaction failed');
+            console.assert(dataUrlToBlob('data:text/plain;base64,QQ==').size === 1, 'iOS export conversion failed');
         }
         runMacroSelfCheck();
 
