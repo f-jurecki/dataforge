@@ -2,7 +2,7 @@
 <html class="light" lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>DataForge Studio</title>
     
     <!-- Material Symbols -->
@@ -18,13 +18,13 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#005bc1",
-                        "surface": "#f9f9fe",
-                        "on-surface": "#2c333d",
-                        "surface-container-high": "#e4e8f3",
-                        "surface-container-low": "#f2f3fa",
-                        "error": "#9f403d",
-                        "on-primary": "#f7f7ff"
+                        "primary": "#ffffff",
+                        "surface": "#050505",
+                        "on-surface": "#f5f5f5",
+                        "surface-container-high": "#171717",
+                        "surface-container-low": "#0d0d0d",
+                        "error": "#ffffff",
+                        "on-primary": "#000000"
                     },
                     fontFamily: {
                         "body":["Inter", "sans-serif"],
@@ -140,6 +140,336 @@
         /* Hide scrollbars for cleaner UI but allow scroll */
         .hide-scroll::-webkit-scrollbar { width: 0px; }
         .hide-scroll { scrollbar-width: none; }
+
+        :root { color-scheme: dark; }
+        ::selection { background: #ffffff; color: #000000; }
+
+        body {
+            background: #050505 !important;
+            color: #f5f5f5 !important;
+        }
+
+        .sidebar {
+            background: #090909 !important;
+            border-color: #282828 !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+        }
+        .sidebar * { box-shadow: none !important; }
+        .sidebar-header {
+            background: #090909 !important;
+            border-color: #282828 !important;
+        }
+        .sidebar-header > div > div {
+            background: transparent !important;
+            color: #ffffff !important;
+            border: 1px solid #3a3a3a;
+            border-radius: 3px !important;
+        }
+        .sidebar-header h1 { color: #ffffff !important; letter-spacing: -0.03em; }
+
+        .tabs {
+            background: #0d0d0d !important;
+            border-color: #282828 !important;
+            border-radius: 4px !important;
+        }
+        .tab-btn {
+            color: #858585 !important;
+            border-radius: 2px !important;
+        }
+        .tab-btn:hover { background: #171717 !important; color: #ffffff !important; }
+        .tab-btn.active {
+            background: #ffffff !important;
+            color: #000000 !important;
+            border-color: #ffffff !important;
+        }
+
+        .mosh-group,
+        .control-group.bg-white,
+        .checkbox-label,
+        .panel-box,
+        #batch-panel,
+        #tab-mosh > div:first-child,
+        #tab-macro > div:last-child {
+            background: #0d0d0d !important;
+            color: #e5e5e5 !important;
+            border-color: #2b2b2b !important;
+            border-radius: 4px !important;
+        }
+        .control-title { color: #9a9a9a !important; letter-spacing: 0.08em; }
+        .checkbox-label.highlight { background: #111111 !important; color: #ffffff !important; border-color: #505050 !important; }
+
+        .form-input,
+        .sidebar input[type="text"] {
+            background: #050505 !important;
+            color: #ffffff !important;
+            border-color: #363636 !important;
+            border-radius: 2px !important;
+        }
+        .form-input:focus,
+        .sidebar input:focus,
+        .sidebar select:focus,
+        .sidebar textarea:focus {
+            border-color: #ffffff !important;
+            outline: none !important;
+            --tw-ring-color: transparent !important;
+        }
+        .sidebar option { background: #090909; color: #ffffff; }
+        .sidebar input[type="checkbox"] { accent-color: #ffffff; border-color: #5a5a5a !important; border-radius: 2px !important; }
+        .sidebar input[type="color"] { background: #050505 !important; border-color: #363636 !important; border-radius: 2px !important; }
+
+        input[type=range]::-webkit-slider-runnable-track { background: #343434; }
+        input[type=range]::-webkit-slider-thumb {
+            background: #ffffff;
+            border-color: #050505;
+            box-shadow: none;
+        }
+
+        .btn {
+            border-radius: 2px !important;
+            border: 1px solid transparent;
+            box-shadow: none !important;
+            letter-spacing: 0.01em;
+        }
+        .btn-primary,
+        .btn-success,
+        .mosh-group .btn-primary,
+        #btn-randomize-pixels {
+            background: #ffffff !important;
+            color: #000000 !important;
+            border-color: #ffffff !important;
+        }
+        .btn-primary:hover,
+        .btn-success:hover,
+        .mosh-group .btn-primary:hover,
+        #btn-randomize-pixels:hover { background: #d8d8d8 !important; }
+        .btn-secondary,
+        .btn-warning,
+        .btn-danger {
+            background: #111111 !important;
+            color: #ffffff !important;
+            border-color: #3a3a3a !important;
+        }
+        .btn-secondary:hover,
+        .btn-warning:hover,
+        .btn-danger:hover { background: #1c1c1c !important; border-color: #666666 !important; }
+
+        .sidebar [class*="text-zinc-9"] { color: #ffffff !important; }
+        .sidebar [class*="text-zinc-7"],
+        .sidebar [class*="text-zinc-5"] { color: #b5b5b5 !important; }
+        .sidebar [class*="text-zinc-4"] { color: #7e7e7e !important; }
+        .sidebar [class*="text-blue-"],
+        .sidebar [class*="text-rose-"],
+        .sidebar [class*="text-amber-"],
+        .sidebar [class*="text-emerald-"],
+        .sidebar [class*="text-primary"] { color: #ffffff !important; }
+        .sidebar [class*="bg-blue-"],
+        .sidebar [class*="bg-rose-"] { background: #0d0d0d !important; border-color: #2b2b2b !important; }
+        .sidebar [class*="bg-zinc-100"],
+        .sidebar [class*="bg-zinc-50"] { background: #0d0d0d !important; }
+        .sidebar [class*="border-zinc-"] { border-color: #2b2b2b !important; }
+        .sidebar > div:last-child { background: #090909 !important; border-color: #282828 !important; box-shadow: none !important; }
+
+        .main-content { background: #050505 !important; }
+        .main-content > div { background: #050505 !important; }
+        #placeholder > div:first-child {
+            background: #111111 !important;
+            color: #ffffff !important;
+            border-color: #303030 !important;
+            border-radius: 50% !important;
+        }
+        #placeholder h3 { color: #ffffff !important; }
+        #placeholder p { color: #777777 !important; }
+        #placeholder p:last-child {
+            background: #0d0d0d !important;
+            color: #ffffff !important;
+            border-color: #353535 !important;
+            border-radius: 2px !important;
+        }
+        #canvas-wrapper {
+            background: #0a0a0a !important;
+            border-color: #272727 !important;
+            border-radius: 4px !important;
+            box-shadow: none !important;
+        }
+        #output { border-color: #282828 !important; border-radius: 2px !important; box-shadow: none !important; }
+        .canvas-bg-pattern {
+            background-color: #101010;
+            background-image:
+                linear-gradient(45deg, #252525 25%, transparent 25%),
+                linear-gradient(-45deg, #252525 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #252525 75%),
+                linear-gradient(-45deg, transparent 75%, #252525 75%);
+        }
+
+        #macro-text {
+            background: #050505 !important;
+            color: #d4d4d4 !important;
+            border-color: #333333 !important;
+            border-radius: 2px !important;
+        }
+        #creator-credit {
+            position: absolute;
+            right: 24px;
+            bottom: 14px;
+            z-index: 30;
+            color: #777777;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: color 150ms ease;
+        }
+        #creator-credit:hover,
+        #creator-credit:focus-visible { color: #ffffff; outline: none; }
+
+        #mobile-toolbar { display: none; }
+
+        @media (max-width: 767px) {
+            html { background: #050505; }
+            body {
+                flex-direction: column !important;
+                width: 100%;
+                height: auto !important;
+                min-height: 100dvh;
+                overflow-x: hidden !important;
+                overflow-y: auto !important;
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+
+            .main-content {
+                order: -1;
+                position: sticky !important;
+                top: 0;
+                z-index: 40;
+                flex: none !important;
+                width: 100%;
+                height: clamp(220px, 42dvh, 420px);
+                border-bottom: 1px solid #282828;
+            }
+            #preview-stage {
+                min-height: 0;
+                padding: calc(54px + env(safe-area-inset-top)) 10px 10px !important;
+                overflow: hidden !important;
+            }
+            #mobile-toolbar {
+                display: flex;
+                position: absolute;
+                top: max(10px, env(safe-area-inset-top));
+                left: 12px;
+                right: 12px;
+                z-index: 50;
+                align-items: center;
+                justify-content: space-between;
+                pointer-events: none;
+            }
+            #mobile-toolbar > span {
+                display: flex;
+                align-items: center;
+                gap: 7px;
+                color: #ffffff;
+                font-size: 11px;
+                font-weight: 700;
+                letter-spacing: 0.1em;
+            }
+            #mobile-upload-button {
+                display: flex;
+                min-height: 36px;
+                align-items: center;
+                gap: 6px;
+                padding: 0 12px;
+                border: 1px solid #ffffff;
+                border-radius: 2px;
+                background: #ffffff;
+                color: #000000;
+                font-size: 11px;
+                font-weight: 700;
+                cursor: pointer;
+                pointer-events: auto;
+            }
+            #mobile-upload-button:active { background: #cfcfcf; }
+
+            #placeholder {
+                gap: 10px !important;
+                padding: 62px 22px 18px !important;
+            }
+            #placeholder > div:first-child { width: 48px !important; height: 48px !important; }
+            #placeholder h3 { font-size: 14px !important; }
+            #placeholder p { font-size: 11px !important; }
+            #placeholder p:last-child { display: none; }
+
+            #canvas-wrapper {
+                width: 100%;
+                height: 100%;
+                max-width: 100% !important;
+                max-height: 100% !important;
+                padding: 7px !important;
+            }
+            #output {
+                width: auto;
+                height: auto;
+                max-width: 100% !important;
+                max-height: 100% !important;
+            }
+            #creator-credit {
+                right: 12px;
+                bottom: 5px;
+                font-size: 8px;
+                letter-spacing: 0.08em;
+            }
+
+            .sidebar {
+                order: 1;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 58dvh;
+                overflow: visible !important;
+                border-right: 0 !important;
+                border-top: 1px solid #282828;
+            }
+            .sidebar-header { display: none; }
+            .tabs {
+                position: sticky;
+                top: clamp(220px, 42dvh, 420px);
+                z-index: 35;
+                margin: 0 !important;
+                padding: 6px 10px !important;
+                border-width: 0 0 1px !important;
+                border-radius: 0 !important;
+            }
+            .tab-btn { min-height: 42px; font-size: 11px !important; }
+            .tab-content {
+                flex: none !important;
+                min-height: 0;
+                gap: 16px !important;
+                padding: 14px 14px 92px !important;
+                overflow: visible !important;
+            }
+            .tab-content.active { display: flex; }
+            .mosh-group,
+            .control-group.bg-white { padding: 14px !important; }
+            .btn { min-height: 44px; }
+            .form-input { min-height: 44px; font-size: 16px !important; }
+            .checkbox-label { min-height: 48px; }
+            input[type=range] { min-height: 28px; }
+            input[type=range]::-webkit-slider-thumb { width: 20px; height: 20px; margin-top: -8px; }
+            #macro-text { min-height: 180px; font-size: 12px !important; }
+
+            .sidebar > div:last-child {
+                position: sticky;
+                bottom: 0;
+                z-index: 45;
+                padding: 10px 12px calc(10px + env(safe-area-inset-bottom)) !important;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .main-content { height: clamp(200px, 38dvh, 360px); }
+            .tabs { top: clamp(200px, 38dvh, 360px); }
+            .tab-btn { padding-left: 4px !important; padding-right: 4px !important; }
+            .tab-btn .material-symbols-outlined { display: none; }
+        }
     </style>
 </head>
 <body class="bg-surface text-on-surface antialiased overflow-hidden h-screen flex">
@@ -174,11 +504,22 @@
         <div id="tab-file" class="tab-content hide-scroll active">
             <div class="flex flex-col gap-2 w-full mt-2">
                 <label class="btn btn-primary cursor-pointer w-full" for="upload">
-                    <span class="material-symbols-outlined">upload_file</span> Open Image
+                    <span class="material-symbols-outlined">upload_file</span> Open Images
                 </label>
-                <input type="file" id="upload" accept="image/*" class="hidden">
+                <input type="file" id="upload" accept="image/*" multiple class="hidden">
             </div>
             <p class="text-[11px] text-zinc-400 text-center font-medium mt-[-10px] mb-2">(or Ctrl+V to paste)</p>
+
+            <div id="batch-panel" class="hidden flex-col gap-2 p-3 bg-blue-50 border border-blue-100 rounded-xl">
+                <div class="flex items-center justify-between text-[11px] font-semibold text-blue-800">
+                    <span id="batch-count">0 images selected</span>
+                    <span id="batch-progress"></span>
+                </div>
+                <button class="btn btn-primary w-full text-xs shadow-sm" id="btn-run-batch">
+                    <span class="material-symbols-outlined text-[16px]">collections</span> Apply Macro to All
+                </button>
+                <p class="text-[10px] text-blue-700/70 leading-relaxed">Batch uses the Export Format selected below.</p>
+            </div>
             
             <button class="btn btn-secondary w-full text-xs shadow-sm hidden" id="btn-reapply-last">
                 <span class="material-symbols-outlined text-[16px]">history</span> Reapply Previous Actions
@@ -187,7 +528,7 @@
             <div class="h-px w-full bg-zinc-200/60 my-2 mt-auto"></div>
             
             <div class="control-group bg-white p-4 rounded-2xl border border-zinc-100 shadow-sm">
-                <label class="control-title">Export Format</label>
+                <label class="control-title">Export Format (Snapshot &amp; Batch)</label>
                 <select id="export-format" class="form-input mb-4">
                     <option value="png">Export PNG (Raster)</option>
                     <option value="svg">Export SVG (Vector - Pixelate Only)</option>
@@ -498,7 +839,7 @@
                 <div class="flex items-center justify-between text-xs text-zinc-500 mb-2 px-1">
                     <span>Actions saved: <span id="macro-count" class="font-bold text-primary">0</span></span>
                 </div>
-                <textarea id="macro-text" class="w-full h-32 bg-zinc-900 text-zinc-300 text-xs font-mono p-2 rounded-lg border border-zinc-700/50 resize-none focus:outline-none focus:border-primary mb-2" placeholder="[ ... ]"></textarea>
+                <textarea id="macro-text" class="w-full h-32 bg-zinc-900 text-zinc-300 text-xs font-mono p-2 rounded-lg border border-zinc-700/50 resize-none focus:outline-none focus:border-primary mb-2" placeholder="[]" spellcheck="false"></textarea>
                 <div class="flex gap-2">
                     <button class="btn btn-secondary flex-1 shadow-sm text-xs" id="btn-copy-macro">
                         <span class="material-symbols-outlined text-[16px]">content_copy</span> Copy Preset
@@ -510,7 +851,7 @@
             </div>
             <div class="bg-blue-50 text-blue-800 p-3 rounded-xl border border-blue-100 text-[11px] font-medium leading-relaxed mt-2 flex items-start gap-2">
                 <span class="material-symbols-outlined text-[16px] text-blue-500 mt-0.5">info</span>
-                <span>To create a preset, use the Pixelator and Datamosh tools normally. They are recorded automatically! Paste a preset code above and click Run to apply it to an image.</span>
+                <span>Every setting change, effect, Undo, and Reset is recorded automatically. Copy the sequence at any time, or paste one above and click Run.</span>
             </div>
         </div>
 
@@ -526,7 +867,13 @@
     </aside>
 
     <main class="main-content flex-1 flex flex-col bg-surface relative overflow-hidden">
-        <div class="flex-1 p-8 flex items-center justify-center bg-zinc-100/50 overflow-auto relative">
+        <div id="mobile-toolbar" aria-label="Mobile toolbar">
+            <span><span class="material-symbols-outlined text-[17px]">data_object</span> DATAFORGE</span>
+            <label id="mobile-upload-button" for="upload">
+                <span class="material-symbols-outlined text-[16px]">add_photo_alternate</span> Open
+            </label>
+        </div>
+        <div id="preview-stage" class="flex-1 p-8 flex items-center justify-center bg-zinc-100/50 overflow-auto relative">
             
             <div id="placeholder" class="absolute inset-0 flex flex-col items-center justify-center gap-4 p-12 text-center pointer-events-none transition-opacity duration-500 opacity-100">
                 <div class="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center text-primary shadow-sm border border-zinc-200">
@@ -544,6 +891,7 @@
             </div>
 
         </div>
+        <a id="creator-credit" href="https://www.instagram.com/jurecki.things" target="_blank" rel="noopener noreferrer" aria-label="Fedor Jurecki on Instagram">Fedor Jurecki ↗</a>
     </main>
 
     <script>
@@ -556,6 +904,7 @@
         
         let originalImgData = null;
         let history =[];
+        let batchFiles = [];
         const MAX_HISTORY = 15;
         let debounceTimer;
 
@@ -642,11 +991,16 @@
         }
 
         // --- FIXED FILE HANDLING PIPELINE ---
-        function handleImageFile(file) {
-            if (typeof resetMacroForNewImage === 'function') resetMacroForNewImage();
-            if (!file) return;
+        function handleImageFile(file, { preserveMacro = false, silent = false } = {}) {
+            return new Promise((resolve, reject) => {
+            if (!file) {
+                reject(new Error('No image file provided.'));
+                return;
+            }
             if (!file.type.startsWith('image/')) {
-                alert("Please select a valid image file.");
+                const error = new Error('Please select a valid image file.');
+                if (!silent) alert(error.message);
+                reject(error);
                 return;
             }
             
@@ -670,7 +1024,9 @@
                         const offCtx = offCanvas.getContext('2d', { willReadFrequently: true });
                         offCtx.drawImage(img, 0, 0, tW, tH);
                         
-                        originalImgData = offCtx.getImageData(0, 0, tW, tH);
+                        const nextImgData = offCtx.getImageData(0, 0, tW, tH);
+                        if (!preserveMacro && typeof resetMacroForNewImage === 'function') resetMacroForNewImage();
+                        originalImgData = nextImgData;
                         history =[];
                         saveState(originalImgData);
                         
@@ -678,20 +1034,51 @@
                         placeholder.style.display = 'none'; 
                         canvasWrapper.style.display = 'flex'; // Activates the flex container logic
                         updateCanvas();
+                        resolve();
                     } catch (e) {
                         console.error("Image processing error:", e);
-                        alert("Error processing the image. It may be too large or corrupted.");
+                        const error = new Error('Error processing the image. It may be too large or corrupted.');
+                        if (!silent) alert(error.message);
+                        reject(error);
                     }
                 }
                 img.onerror = function() {
-                    alert("The selected image could not be loaded properly.");
+                    const error = new Error('The selected image could not be loaded properly.');
+                    if (!silent) alert(error.message);
+                    reject(error);
                 }
                 img.src = event.target.result;
             }
             reader.onerror = function() {
-                alert("Your browser failed to read the file correctly.");
+                const error = new Error('Your browser failed to read the file correctly.');
+                if (!silent) alert(error.message);
+                reject(error);
             }
             reader.readAsDataURL(file);
+            });
+        }
+
+        const batchPanel = document.getElementById('batch-panel');
+        const batchCountEl = document.getElementById('batch-count');
+        const batchProgressEl = document.getElementById('batch-progress');
+        const batchButton = document.getElementById('btn-run-batch');
+
+        function updateBatchPanel() {
+            batchCountEl.textContent = `${batchFiles.length} images selected`;
+            batchPanel.classList.toggle('hidden', batchFiles.length < 2);
+            batchPanel.classList.toggle('flex', batchFiles.length >= 2);
+            if (batchFiles.length < 2) batchProgressEl.textContent = '';
+        }
+
+        async function selectImageFiles(files) {
+            const images = [...files].filter(file => file.type.startsWith('image/'));
+            if (images.length === 0) {
+                alert('Please select at least one valid image file.');
+                return;
+            }
+            batchFiles = images;
+            updateBatchPanel();
+            await handleImageFile(images[0]);
         }
 
         const uploadInput = document.getElementById('upload');
@@ -699,9 +1086,9 @@
         uploadInput.addEventListener('click', function() { 
             this.value = null; 
         });
-        uploadInput.addEventListener('change', function(e) {
+        uploadInput.addEventListener('change', async function(e) {
             if (e.target.files && e.target.files.length > 0) {
-                handleImageFile(e.target.files[0]);
+                try { await selectImageFiles(e.target.files); } catch (_) {}
             }
         });
 
@@ -721,13 +1108,13 @@
             }
         });
 
-        mainContent.addEventListener('drop', e => {
+        mainContent.addEventListener('drop', async e => {
             e.preventDefault();
             e.stopPropagation();
             mainContent.classList.remove('drag-over');
             const files = e.dataTransfer.files;
             if (files && files.length > 0) {
-                handleImageFile(files[0]);
+                try { await selectImageFiles(files); } catch (_) {}
             }
         });
 
@@ -735,7 +1122,9 @@
             const items = (e.clipboardData || e.originalEvent.clipboardData).items;
             for (let i = 0; i < items.length; i++) {
                 if (items[i].type.indexOf('image') === 0) { 
-                    handleImageFile(items[i].getAsFile()); 
+                    batchFiles = [];
+                    updateBatchPanel();
+                    handleImageFile(items[i].getAsFile()).catch(() => {}); 
                     break; 
                 }
             }
@@ -1476,128 +1865,324 @@
 
         // --- MACRO / PRESET SYSTEM ---
         let currentMacro = [];
+        let isReplayingMacro = false;
         const macroCountEl = document.getElementById('macro-count');
         const macroTextEl = document.getElementById('macro-text');
+        const macroControlElements = [...document.querySelectorAll('input[id], select[id]')]
+            .filter(el => el.type !== 'file' && !el.id.startsWith('macro-'));
+        const macroControlsById = new Map(macroControlElements.map(el => [el.id, el]));
+        const effectButtons = ['btn-sonify', 'btn-sort', 'btn-rgb', 'btn-genloss', 'btn-frankenstein', 'btn-pixelate', 'btn-sharpen', 'btn-interleave', 'btn-noise', 'btn-deepfry', 'btn-bake-pixelator'];
+        const historyButtons = ['btn-undo', 'btn-reset'];
+        const macroTargetIds = new Set([...effectButtons, ...historyButtons]);
+
+        function cloneMacro(macro) {
+            return macro.map(step => ({ ...(step.target ? { target: step.target } : {}), state: { ...step.state } }));
+        }
+
+        function validateMacro(value) {
+            if (!Array.isArray(value)) throw new Error('Preset must be an array.');
+            if (value.length > 1000) throw new Error('Preset is too long (maximum 1000 actions).');
+
+            return value.map((step, index) => {
+                if (!step || typeof step !== 'object' || Array.isArray(step) || !step.state || typeof step.state !== 'object' || Array.isArray(step.state)) {
+                    throw new Error(`Action ${index + 1} has an invalid state.`);
+                }
+                if (step.target !== undefined && (typeof step.target !== 'string' || !macroTargetIds.has(step.target))) {
+                    throw new Error(`Action ${index + 1} has an unknown target.`);
+                }
+
+                const state = {};
+                for (const [id, value] of Object.entries(step.state)) {
+                    if (macroControlsById.has(id) && ['string', 'number', 'boolean'].includes(typeof value)) state[id] = value;
+                }
+                return { ...(step.target ? { target: step.target } : {}), state };
+            });
+        }
 
         function getGlobalState() {
-            let state = {};
-            document.querySelectorAll('input[id], select[id]').forEach(el => {
-                if (el.type === 'file' || el.id.startsWith('macro-')) return;
+            const state = {};
+            macroControlElements.forEach(el => {
                 state[el.id] = el.type === 'checkbox' ? el.checked : el.value;
             });
             return state;
         }
 
+        function runMacroSelfCheck() {
+            const sample = validateMacro([{ target: 'btn-rgb', state: { 'rgb-offset': '7', unknown: 'ignored' } }, { state: { 'enable-pixelator': true } }]);
+            console.assert(sample.length === 2 && sample[0].state['rgb-offset'] === '7' && !('unknown' in sample[0].state), 'Macro validation failed');
+            const copy = cloneMacro(sample);
+            copy[0].state['rgb-offset'] = '8';
+            console.assert(sample[0].state['rgb-offset'] === '7', 'Macro cloning failed');
+            const usedNames = new Set();
+            console.assert(makeOutputName({ name: 'photo.jpg' }, 'svg', usedNames) === 'photo-dataforge.svg' && makeOutputName({ name: 'photo.png' }, 'svg', usedNames) === 'photo-dataforge-2.svg', 'Batch naming failed');
+        }
+        runMacroSelfCheck();
+
         function applyGlobalState(state) {
-            for (let id in state) {
-                let el = document.getElementById(id);
-                if (el) {
-                    if (el.type === 'checkbox') el.checked = state[id];
-                    else el.value = state[id];
-                    el.dispatchEvent(new Event('input')); // visually update
-                    if (el.type === 'range' && el.nextElementSibling && el.nextElementSibling.classList.contains('text-zinc-500')) {
-                        el.nextElementSibling.textContent = state[id];
-                    }
-                }
+            for (const [id, value] of Object.entries(state)) {
+                const el = macroControlsById.get(id);
+                if (!el) continue;
+                if (el.type === 'checkbox') el.checked = Boolean(value);
+                else el.value = String(value);
+                el.dispatchEvent(new Event('input'));
+                el.dispatchEvent(new Event('change'));
             }
-            
-            // Fix: Restore the pixelator toggle explicitly, because dispatching 'input' 
-            // on pixelator sliders forces it to true automatically due to its listeners.
-            const pToggle = document.getElementById('enable-pixelator');
-            if (pToggle && state['enable-pixelator'] !== undefined) {
-                pToggle.checked = state['enable-pixelator'];
+
+            // : The pixel controls enable the live pixelator while refreshing their UI.
+            // Restore the recorded toggle after those synthetic events have finished.
+            if (state['enable-pixelator'] !== undefined) pixelatorToggle.checked = Boolean(state['enable-pixelator']);
+            clearTimeout(debounceTimer);
+            updateCanvas();
+        }
+
+        function renderMacro() {
+            macroCountEl.textContent = currentMacro.length;
+            macroTextEl.value = JSON.stringify(currentMacro);
+            macroTextEl.setCustomValidity('');
+        }
+
+        function syncMacroFromText() {
+            const text = macroTextEl.value.trim();
+            if (!text) return;
+            try {
+                currentMacro = validateMacro(JSON.parse(text));
+            } catch (_) {
+                // : Keep the last valid sequence while the user is midway through editing JSON.
             }
-            
-            updateCanvas(); // Reflect Pixelator changes instantly
         }
 
         function recordAction(targetId) {
-            currentMacro.push({ target: targetId, state: getGlobalState() });
-            macroCountEl.textContent = currentMacro.length;
-            macroTextEl.value = JSON.stringify(currentMacro);
+            if (isReplayingMacro || history.length === 0) return;
+            syncMacroFromText();
+            currentMacro.push({ ...(targetId ? { target: targetId } : {}), state: getGlobalState() });
+            renderMacro();
         }
 
-        // Add listeners to record actions
-        const effectButtons = ['btn-sonify', 'btn-sort', 'btn-rgb', 'btn-genloss', 'btn-frankenstein', 'btn-pixelate', 'btn-sharpen', 'btn-interleave', 'btn-noise', 'btn-deepfry'];
-        effectButtons.forEach(id => {
-            let btn = document.getElementById(id);
-            if (btn) {
-                btn.addEventListener('click', () => {
-                    if (history.length > 0) recordAction(id);
-                }, true); // Use capture phase so it records BEFORE the effect runs
-            }
+        macroControlElements.forEach(el => {
+            el.addEventListener('change', event => {
+                if (event.isTrusted) recordAction();
+            });
         });
 
-        // Bake Pixelator Logic
+        effectButtons.concat(historyButtons).forEach(id => {
+            document.getElementById(id).addEventListener('click', () => recordAction(id), true);
+        });
+
+        // Randomization is stored as the resulting state so replay stays deterministic.
+        document.getElementById('btn-randomize-pixels').addEventListener('click', () => recordAction());
+
         document.getElementById('btn-bake-pixelator').addEventListener('click', () => {
             if (history.length === 0) return;
-            recordAction('btn-bake-pixelator');
             commitDatamosh(ctx.getImageData(0, 0, canvas.width, canvas.height));
         });
 
-        document.getElementById('btn-copy-macro').addEventListener('click', async () => {
-            await navigator.clipboard.writeText(macroTextEl.value);
-            const btn = document.getElementById('btn-copy-macro');
-            btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">check</span> Copied!`;
-            setTimeout(() => {
-                btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">content_copy</span> Copy Preset`;
-            }, 2000);
+        macroTextEl.addEventListener('input', () => {
+            try {
+                currentMacro = validateMacro(JSON.parse(macroTextEl.value || '[]'));
+                macroCountEl.textContent = currentMacro.length;
+                macroTextEl.setCustomValidity('');
+            } catch (error) {
+                macroTextEl.setCustomValidity(error.message);
+            }
         });
+
+        async function copyText(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+                return;
+            }
+            macroTextEl.focus();
+            macroTextEl.select();
+            if (!document.execCommand('copy')) throw new Error('Clipboard is unavailable.');
+        }
+
+        document.getElementById('btn-copy-macro').addEventListener('click', async () => {
+            const btn = document.getElementById('btn-copy-macro');
+            try {
+                await copyText(macroTextEl.value || '[]');
+                btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">check</span> Copied!`;
+                setTimeout(() => {
+                    btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">content_copy</span> Copy Preset`;
+                }, 2000);
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        async function runMacroStep(step) {
+            applyGlobalState(step.state);
+            if (!step.target) return;
+
+            const target = document.getElementById(step.target);
+            if (historyButtons.includes(step.target)) {
+                target.click();
+                return;
+            }
+
+            await new Promise((resolve, reject) => {
+                const done = () => {
+                    clearTimeout(timeoutId);
+                    resolve();
+                };
+                const timeoutId = setTimeout(() => {
+                    if (resolveMacroStep === done) resolveMacroStep = null;
+                    reject(new Error(`Action ${step.target} did not finish.`));
+                }, 120000);
+                resolveMacroStep = done;
+                target.click();
+            });
+        }
+
+        async function executeMacro(macro) {
+            const wasReplaying = isReplayingMacro;
+            isReplayingMacro = true;
+            try {
+                for (const step of macro) await runMacroStep(step);
+            } finally {
+                isReplayingMacro = wasReplaying;
+                resolveMacroStep = null;
+            }
+        }
 
         document.getElementById('btn-play-macro').addEventListener('click', async () => {
             if (history.length === 0) {
                 alert("Please load an image first.");
                 return;
             }
+
+            const btn = document.getElementById('btn-play-macro');
             try {
-                let macro = JSON.parse(macroTextEl.value);
-                if(!Array.isArray(macro)) return;
-                
-                const btn = document.getElementById('btn-play-macro');
+                const macro = validateMacro(JSON.parse(macroTextEl.value || '[]'));
+                currentMacro = cloneMacro(macro);
+                macroCountEl.textContent = currentMacro.length;
                 btn.disabled = true;
                 btn.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">sync</span> Playing...`;
-                
-                for (let step of macro) {
-                    applyGlobalState(step.state);
-                    await new Promise(resolve => {
-                        resolveMacroStep = resolve;
-                        document.getElementById(step.target).click();
-                        
-                        // Fallback resolve to prevent infinite hangs if an effect errors out
-                        setTimeout(() => { if(resolveMacroStep === resolve) resolve(); }, 3000); 
-                    });
-                    // Tiny delay to let DOM and Canvas settle
-                    await new Promise(r => setTimeout(r, 50)); 
-                }
+
+                await executeMacro(macro);
+            } catch (error) {
+                alert(`Cannot run preset: ${error.message}`);
+            } finally {
                 btn.disabled = false;
                 btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">play_arrow</span> Run Preset`;
-            } catch(e) {
-                alert("Invalid Preset JSON");
             }
+        });
+
+        function canvasToOutputBlob(format) {
+            if (format === 'svg') return Promise.resolve(new Blob([generateSVG()], { type: 'image/svg+xml;charset=utf-8' }));
+            return new Promise((resolve, reject) => {
+                canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Could not encode PNG output.')), 'image/png');
+            });
+        }
+
+        function makeOutputName(file, format, usedNames) {
+            const base = (file.name.replace(/\.[^.]+$/, '') || 'image').replace(/[<>:"/\\|?*]/g, '_');
+            let name = `${base}-dataforge.${format}`;
+            let suffix = 2;
+            while (usedNames.has(name.toLowerCase())) name = `${base}-dataforge-${suffix++}.${format}`;
+            usedNames.add(name.toLowerCase());
+            return name;
+        }
+
+        async function saveBatchFile(blob, name, directoryHandle) {
+            if (directoryHandle) {
+                const fileHandle = await directoryHandle.getFileHandle(name, { create: true });
+                const writable = await fileHandle.createWritable();
+                await writable.write(blob);
+                await writable.close();
+                return;
+            }
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = name;
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        batchButton.addEventListener('click', async () => {
+            if (batchFiles.length < 2) return;
+
+            let macro;
+            try {
+                macro = validateMacro(JSON.parse(macroTextEl.value || '[]'));
+            } catch (error) {
+                alert(`Cannot run batch: ${error.message}`);
+                return;
+            }
+
+            let directoryHandle = null;
+            if ('showDirectoryPicker' in window && window.isSecureContext) {
+                try {
+                    directoryHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+                } catch (error) {
+                    if (error.name === 'AbortError') return;
+                    // : Older browsers fall back to regular downloads and may ask to allow multiple files.
+                }
+            }
+
+            const playButton = document.getElementById('btn-play-macro');
+            const originalButtonHtml = batchButton.innerHTML;
+            const usedNames = new Set();
+            const failures = [];
+            const format = document.getElementById('export-format').value;
+            let completed = 0;
+
+            currentMacro = cloneMacro(macro);
+            macroCountEl.textContent = currentMacro.length;
+            batchButton.disabled = true;
+            playButton.disabled = true;
+            uploadInput.disabled = true;
+
+            try {
+                for (let index = 0; index < batchFiles.length; index++) {
+                    const file = batchFiles[index];
+                    batchProgressEl.textContent = `${index + 1}/${batchFiles.length}`;
+                    batchButton.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">sync</span> Processing ${index + 1}/${batchFiles.length}`;
+
+                    try {
+                        await handleImageFile(file, { preserveMacro: true, silent: true });
+                        await executeMacro(macro);
+                        const blob = await canvasToOutputBlob(format);
+                        await saveBatchFile(blob, makeOutputName(file, format, usedNames), directoryHandle);
+                        completed++;
+                    } catch (error) {
+                        console.error(`Batch failed for ${file.name}:`, error);
+                        failures.push(file.name);
+                    }
+                }
+            } finally {
+                batchButton.disabled = false;
+                playButton.disabled = false;
+                uploadInput.disabled = false;
+                batchButton.innerHTML = originalButtonHtml;
+                batchProgressEl.textContent = `${completed}/${batchFiles.length} done`;
+            }
+
+            const failureText = failures.length ? ` Failed: ${failures.join(', ')}.` : '';
+            alert(`Batch complete: ${completed} of ${batchFiles.length} images saved.${failureText}`);
         });
 
         // Reapply Previous Logic
         let lastImageMacro = [];
         window.resetMacroForNewImage = function() {
-            if (currentMacro && currentMacro.length > 0) {
-                lastImageMacro = [...currentMacro];
-            }
+            syncMacroFromText();
+            if (currentMacro.length > 0) lastImageMacro = cloneMacro(currentMacro);
             currentMacro = [];
-            if(macroCountEl) macroCountEl.textContent = '0';
-            if(macroTextEl) macroTextEl.value = '';
-            
+            renderMacro();
+
             const reapplyBtn = document.getElementById('btn-reapply-last');
-            if (reapplyBtn) {
-                if (lastImageMacro.length > 0) reapplyBtn.classList.remove('hidden');
-                else reapplyBtn.classList.add('hidden');
-            }
+            if (lastImageMacro.length > 0) reapplyBtn.classList.remove('hidden');
+            else reapplyBtn.classList.add('hidden');
         };
 
         document.getElementById('btn-reapply-last').addEventListener('click', () => {
-            if (lastImageMacro.length > 0) {
-                macroTextEl.value = JSON.stringify(lastImageMacro);
-                document.getElementById('btn-play-macro').click();
-            }
+            if (lastImageMacro.length === 0) return;
+            currentMacro = cloneMacro(lastImageMacro);
+            renderMacro();
+            document.getElementById('btn-play-macro').click();
         });
     </script>
 </body>
