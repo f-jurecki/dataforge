@@ -890,7 +890,7 @@
             </div>
             <div class="bg-blue-50 text-blue-800 p-3 rounded-xl border border-blue-100 text-[11px] font-medium leading-relaxed mt-2 flex items-start gap-2">
                 <span class="material-symbols-outlined text-[16px] text-blue-500 mt-0.5">info</span>
-                <span>Every setting change, effect, Undo, and Reset is recorded automatically. Copy the sequence at any time, or paste one above and click Run.</span>
+                <span>The preset keeps only current settings and applied effects. Randomize replaces obsolete settings, Undo removes the last applied action, and Reset clears the sequence.</span>
             </div>
         </div>
 
@@ -1984,6 +1984,24 @@
             return macro.map(step => ({ ...(step.target ? { target: step.target } : {}), state: { ...step.state } }));
         }
 
+        function compactMacro(macro) {
+            const compacted = [];
+            for (const sourceStep of macro) {
+                const step = { ...(sourceStep.target ? { target: sourceStep.target } : {}), state: { ...sourceStep.state } };
+                const lastStep = compacted[compacted.length - 1];
+                if (!step.target) {
+                    if (lastStep && !lastStep.target) compacted[compacted.length - 1] = step;
+                    else compacted.push(step);
+                    continue;
+                }
+
+                // Every action already contains the full current state, so a state-only step before it is redundant.
+                if (lastStep && !lastStep.target) compacted.pop();
+                compacted.push(step);
+            }
+            return compacted;
+        }
+
         function validateMacro(value) {
             if (!Array.isArray(value)) throw new Error('Preset must be an array.');
             if (value.length > 1000) throw new Error('Preset is too long (maximum 1000 actions).');
@@ -2026,6 +2044,8 @@
             console.assert(makeOutputName({ name: 'photo.jpg' }, 'svg', usedNames) === 'photo-dataforge.svg' && makeOutputName({ name: 'photo.png' }, 'svg', usedNames) === 'photo-dataforge-2.svg', 'Batch naming failed');
             const rotated = rotatePoint(1, 0, 0, 0, 0, 1);
             console.assert(Math.abs(rotated.x) < 0.000001 && Math.abs(rotated.y - 1) < 0.000001, 'Grid rotation failed');
+            const compacted = compactMacro([{ state: { size: '10' } }, { state: { size: '20' } }, { target: 'btn-rgb', state: { size: '20' } }]);
+            console.assert(compacted.length === 1 && compacted[0].target === 'btn-rgb', 'Macro compaction failed');
         }
         runMacroSelfCheck();
 
@@ -2065,7 +2085,26 @@
         function recordAction(targetId) {
             if (isReplayingMacro || history.length === 0) return;
             syncMacroFromText();
-            currentMacro.push({ ...(targetId ? { target: targetId } : {}), state: getGlobalState() });
+            currentMacro = compactMacro([...currentMacro, { ...(targetId ? { target: targetId } : {}), state: getGlobalState() }]);
+            renderMacro();
+        }
+
+        function removeLastAppliedMacroAction() {
+            if (isReplayingMacro || history.length <= 1) return;
+            syncMacroFromText();
+            currentMacro = compactMacro(currentMacro);
+            for (let index = currentMacro.length - 1; index >= 0; index--) {
+                if (effectButtons.includes(currentMacro[index].target) || currentMacro[index].target === 'btn-reset') {
+                    currentMacro.splice(index, 1);
+                    break;
+                }
+            }
+            renderMacro();
+        }
+
+        function clearMacroOnReset() {
+            if (isReplayingMacro || !originalImgData) return;
+            currentMacro = [];
             renderMacro();
         }
 
@@ -2075,9 +2114,12 @@
             });
         });
 
-        effectButtons.concat(historyButtons).forEach(id => {
+        effectButtons.forEach(id => {
             document.getElementById(id).addEventListener('click', () => recordAction(id), true);
         });
+
+        document.getElementById('btn-undo').addEventListener('click', removeLastAppliedMacroAction, true);
+        document.getElementById('btn-reset').addEventListener('click', clearMacroOnReset, true);
 
         // Randomization is stored as the resulting state so replay stays deterministic.
         document.getElementById('btn-randomize-pixels').addEventListener('click', () => recordAction());
